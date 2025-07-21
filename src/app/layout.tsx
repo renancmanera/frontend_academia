@@ -1,4 +1,6 @@
 // app/layout.tsx
+import '../styles/globals.css'
+
 export const metadata = {
   title: 'Portal Academia',
   description: 'Sistema de treinos para alunos e instrutores',
