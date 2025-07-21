@@ -6,10 +6,7 @@ import { useRouter } from "next/navigation";
 
 export default function LoginFitAcademy() {
   const router = useRouter();
-  const [form, setForm] = useState({
-    email: "",
-    senha: "",
-  });
+  const [form, setForm] = useState({ email: "", senha: "" });
   const [mensagem, setMensagem] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -23,20 +20,31 @@ export default function LoginFitAcademy() {
     setMensagem("");
     setLoading(true);
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    const data = await res.json();
-    setLoading(false);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      setLoading(false);
 
-    if (res.ok && data.token) {
-      setMensagem("Login realizado com sucesso!");
-      localStorage.setItem("token", data.token);
-      router.push("/");
-    } else {
-      setMensagem(data.erro || "E-mail ou senha inválido.");
+      if (res.ok && data.token && data.papel) {
+        localStorage.setItem("token", data.token);
+
+        if (data.papel === "instrutor") {
+          setMensagem("Login permitido. Redirecionando...");
+          router.push("/home");
+        } else {
+          setMensagem("Apenas instrutores têm acesso a esta área.");
+          localStorage.removeItem("token");
+        }
+      } else {
+        setMensagem(data.erro || "E-mail ou senha inválido.");
+      }
+    } catch {
+      setLoading(false);
+      setMensagem("Não foi possível conectar. Tente novamente.");
     }
   }
 
@@ -56,15 +64,11 @@ export default function LoginFitAcademy() {
         <form
           onSubmit={handleSubmit}
           className="w-full bg-white rounded-xl border border-neutral-200 p-5 pt-6 flex flex-col gap-3"
-          style={{
-            boxShadow: "0px 2px 8px 0px #0001",
-            minWidth: 260,
-          }}
+          style={{ boxShadow: "0px 2px 8px 0px #0001", minWidth: 260 }}
         >
-          {/* Campo E-mail */}
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24">
                 <path
                   fill="currentColor"
                   d="M21 7.48V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v1.48l9 5.25 9-5.25Zm0 2.27-8.4 4.9a1 1 0 0 1-1.2 0L3 9.75V18a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9.75Z"
@@ -83,10 +87,10 @@ export default function LoginFitAcademy() {
               aria-label="E-mail"
             />
           </div>
-          {/* Campo Senha */}
+
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24">
                 <path
                   fill="currentColor"
                   d="M17 9V7a5 5 0 0 0-10 0v2H5a1 1 0 0 0-1 1v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a1 1 0 0 0-1-1h-1Zm-8 0V7a3 3 0 1 1 6 0v2H9Zm3 5.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Z"
