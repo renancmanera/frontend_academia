@@ -2,7 +2,7 @@
 import '../styles/globals.css'
 
 export const metadata = {
-  title: 'Portal Academia',
+  title: 'FitAcademy',
   description: 'Sistema de treinos para alunos e instrutores',
 }
 
