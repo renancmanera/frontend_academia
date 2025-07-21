@@ -2,10 +2,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Dumbbell } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type Papel = "aluno" | "instrutor";
 
 export default function CadastroFitAcademy() {
+  const router = useRouter();
   const [papel, setPapel] = useState<Papel>("aluno");
   const [form, setForm] = useState({
     nome: "",
@@ -42,6 +44,11 @@ export default function CadastroFitAcademy() {
     const data = await res.json();
     setMensagem(data.mensagem || data.erro || "Erro inesperado");
     setLoading(false);
+
+    if (data.mensagem?.toLowerCase().includes("sucesso")) {
+      router.push("/home");
+      return;
+    }
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -164,7 +171,7 @@ export default function CadastroFitAcademy() {
               aria-label="Confirmar senha"
             />
           </div>
-          {/* Papel toggle moderno preto, compacto */}
+          {/* Papel toggle compacto */}
           <div className="flex gap-2 mb-1 justify-center">
             <label className="flex-1">
               <input

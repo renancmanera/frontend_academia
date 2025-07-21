@@ -1,3 +1,4 @@
 {
-  "/cadastro/page": "app/cadastro/page.js"
+  "/cadastro/page": "app/cadastro/page.js",
+  "/page": "app/page.js"
 }
